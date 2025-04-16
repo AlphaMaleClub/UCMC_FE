@@ -37,7 +37,6 @@ export async function createAuction(dto, imageFiles) {
 // 경매글 목록 조회 (+검색/필터/페이지)
 export async function listAuctions(params = {}) {
   const query = new URLSearchParams(params).toString();
-  // 예시) ?title=xxx&nickname=yyy&page=0&size=10
   return request(`/api/auctions?${query}`, {
     method: "GET",
   });
@@ -48,20 +47,14 @@ export async function listAuctionImages(auctionId) {
   return request(`/api/auctions/${auctionId}/images`);
 }
 
-/**
- * 경매글 상세 조회
- * - Spring: @GetMapping("/api/auctions/{id}")
- */
+//경매글 상세 조회
 export async function getAuction(auctionId) {
   return request(`/api/auctions/${auctionId}`, {
     method: "GET",
   });
 }
 
-/**
- * 경매글 수정 (제목, 내용 등 텍스트)
- * - Spring: @PatchMapping("/api/auctions/{id}")
- */
+// 경매글 수정 (제목, 내용 등 텍스트)
 export async function updateAuction(auctionId, dto) {
   return request(`/api/auctions/${auctionId}`, {
     method: "PATCH",
@@ -70,36 +63,25 @@ export async function updateAuction(auctionId, dto) {
   });
 }
 
-/**
- * 경매글 삭제
- * - Spring: @DeleteMapping("/api/auctions/{id}")
- */
+//경매글 삭제
 export async function deleteAuction(auctionId) {
   return request(`/api/auctions/${auctionId}`, {
     method: "DELETE",
   });
 }
 
-/**
- * 경매 입찰
- * - Spring: @PostMapping("/api/auctions/{id}/bid")
- * - request param? bidPrice
- */
+// 경매 입찰
 export async function bidAuction(auctionId, bidPrice) {
   const url = `/api/auctions/${auctionId}/bid?bidPrice=${bidPrice}`;
   return request(url, { method: "POST" });
 }
 
-/**
- * 경매글 이미지 수정
- * - 백엔드: @PatchMapping("/{id}/images"), @RequestParam Map<Long, MultipartFile>
- * - images = [{ imageId: number, file: File }, ...]
- */
+// 경매글 이미지 수정
 export async function updateAuctionImages(auctionId, images) {
   // Spring 쪽은 key=이미지ID, value=파일 로 받도록 되어 있음
   const fd = new FormData();
   images.forEach(({ imageId, file }) => {
-    // 폼필드 이름이 "1", "2", "3" 처럼 들어가도록
+    // 필드 이름이 숫자로 들어가도록
     fd.append(String(imageId), file);
   });
   return request(`/api/auctions/${auctionId}/images`, {
@@ -108,11 +90,7 @@ export async function updateAuctionImages(auctionId, images) {
   });
 }
 
-/**
- * 경매글 이미지 삭제
- * - 백엔드: @DeleteMapping("/{id}/images"), @RequestParam(required=false) List<Long> imageIds
- *   → ex) /images?imageIds=1&imageIds=2
- */
+// 경매글 이미지 삭제
 export async function deleteAuctionImages(auctionId, imageIds) {
   // 없다면 전체삭제, 있다면 해당 이미지들만 삭제
   let url = `/api/auctions/${auctionId}/images`;
