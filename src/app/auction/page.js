@@ -1,51 +1,59 @@
 import AuctionCard from "@/components/auction/AuctionCard";
 import { listAuctions } from "@/service/auctionService";
 
-// Next.js의 13+ (App Router)에서 서버 컴포넌트로 작성 가능
 export const dynamic = "force-dynamic";
 
 export default async function AuctionList({ searchParams }) {
-  // 쿼리 파라미터 추출 (검색/페이지네이션/ongoingOnly 등)
-  const page = searchParams.page ?? 0;
+  const page = Number(searchParams.page ?? 1);
   const size = 10;
-  const ongoingOnly = searchParams.ongoingOnly ?? "false";
 
-  // 백엔드 호출 → Page<AuctionResponse> 형태 가정
-  const result = await listAuctions({
-    page,
+  const { content: auctions, totalPages } = await listAuctions({
+    page: page - 1,
     size,
     title: searchParams.title ?? "",
     nickname: searchParams.nickname ?? "",
-    ongoingOnly,
+    ongoingOnly: searchParams.ongoingOnly ?? "false",
   });
 
-  const { content: auctions, totalPages } = result;
-
   return (
-    <main className="max-w-3xl mx-auto p-4 space-y-4">
-      <h1 className="text-2xl font-bold">경매 게시판</h1>
-      <a href="/auction/add" className="btn-primary inline-block">
-        새 경매글 등록
-      </a>
+    <div className="flex w-full justify-center min-h-screen bg-white">
+      {/* 좌우 여백 */}
+      <div className="bg-gray-50 w-1/20" />
+      <div className="bg-white flex justify-center items-start p-2 w-18/20">
+        <div className="w-[230rem]">
+          {/* 헤더 */}
+          <div className="flex justify-between items-center">
+            <h1 className="text-black p-1 py-4 font-semibold text-base">경매 리스트</h1>
+            <a href="/auction/add" className="btn-primary px-4">새 글 등록</a>
+          </div>
 
-      {auctions?.map((auction) => (
-        <AuctionCard key={auction.id} auction={auction} />
-      ))}
+          {/* 카드 그리드 */}
+          <div className="grid grid-cols-5 gap-2">
+            {auctions.map(a => <AuctionCard key={a.id} auction={a} />)}
+          </div>
 
-      {/* 페이지네이션 버튼 */}
-      <div className="flex gap-2 justify-center mt-4">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <a
-            key={i}
-            href={`?page=${i}&ongoingOnly=${ongoingOnly}`}
-            className={`px-3 py-1 border rounded ${
-              i == page ? "bg-gray-200" : ""
-            }`}
-          >
-            {i + 1}
-          </a>
-        ))}
+          <div className="h-10" />
+
+          {/* 페이지네이션 */}
+          <div className="flex cursor-pointer justify-center gap-2 pb-6 text-gray-600">
+            {Array.from({ length: totalPages }, (_, i) => {
+              const n = i + 1;
+              return (
+                <a
+                  key={n}
+                  href={`/auction?page=${n}`}
+                  className={`px-3 py-1 rounded ${
+                    n === page ? "bg-red-300 text-white" : "hover:bg-red-400"
+                  }`}
+                >
+                  {n}
+                </a>
+              );
+            })}
+          </div>
+        </div>
       </div>
-    </main>
+      <div className="bg-gray-50 w-1/20" />
+    </div>
   );
 }

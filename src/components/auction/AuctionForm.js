@@ -66,7 +66,7 @@ export default function AuctionForm({ initial, auctionId }) {
         value={form.content}
         onChange={handleChange}
         placeholder="내용"
-        className="textarea"
+        className="textarea h-40"
         required
       />
 

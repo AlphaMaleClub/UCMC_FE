@@ -92,13 +92,13 @@ export default function AuctionImagesManager({ auctionId }) {
     );
 
   return (
-    <div className="border rounded p-3 space-y-4">
+    <div className="bg-white border rounded-xl p-3 space-y-4">
       <h3 className="font-semibold">이미지 수정 / 삭제</h3>
 
       {/* 이미지 썸네일 + 파일 선택 + 개별 삭제 */}
       <div className="grid grid-cols-2 gap-4">
         {images.map((img) => (
-          <div key={img.id} className="border p-2 rounded">
+          <div key={img.id} className="bg-gray-200 p-2 rounded-xl">
             <img
               src={img.imageUrl}
               alt="auction"
