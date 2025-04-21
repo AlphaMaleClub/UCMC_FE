@@ -265,20 +265,7 @@ export default function TradeBoardAddPostPage() {
                                 placeholder="가격"
                             />
                         </div>
-
-                        <div className="bg-white p-1">
-                            <div className="bg-white flex justify-center items-center">
-                                <input className="w-full h-full bg-red-100 rounded-xs text-black p-1" type="text"
-                                       placeholder="키워드 등록"/>
-                            </div>
-                        </div>
-
-                        <div className="bg-white p-1">
-                            <p className="text-xs text-gray-400">카테고리 분류</p>
-                            <div className="flex justify-center items-center h-30 bg-red-100 w-full rounded-xs p-1">
-
-                            </div>
-                        </div>
+                        
 
 
                         {/* 거래 장소 */}

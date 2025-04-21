@@ -107,8 +107,9 @@ export default function TradePostAdd() {
                 <div className="bg-white w-230 h-full flex flex-col items-center gap-2">
                     <div className="bg-white h-5"></div>
 
-                    <div className="bg-white w-full h-100 flex justify-between items-center">
-                        <div className="bg-gray-100 w-100 h-100 rounded-xl">
+                    <div className="bg-white w-full h-90 flex justify-between items-center">
+
+                        <div className="bg-gray-100 w-100 h-90 rounded-xl">
                             {data?.productImages?.length > 0 && (
                                 <img
                                     src={`${data.productImages[0].imageUrl}?v=${Date.now()}`}
@@ -118,11 +119,10 @@ export default function TradePostAdd() {
                             )}
                         </div>
 
-                        <div className=" w-120 h-100 flex flex-col items-start text-black gap-2">
+                        <div className=" w-120 h-90 flex flex-col items-start text-black gap-2">
                             <div className="flex w-full justify-between items-center">
-                                <div>
-                                    <p className="text-xs text-gray-500">카테코리 / 카태고리1 / 2</p>
-                                </div>
+                                <p className="text-lg font-semibold">{data?.title}</p>
+
                                 <div>
                                     <Dropdown
                                         status={statusTextMap[data?.status]}
@@ -133,7 +133,7 @@ export default function TradePostAdd() {
                                 </div>
                             </div>
 
-                            <p className="text-lg font-semibold">{data?.title}</p>
+
                             <p className="text-xl font-semibold">{data?.price?.toLocaleString()} 원</p>
                             <p className="text-sm font-semibold text-black">
                                 배송 방식 : {deliveryTypeTextMap[data?.deliveryType] || "알 수 없음"}
@@ -142,18 +142,18 @@ export default function TradePostAdd() {
                             <div className="flex justify-between items-center w-full h-22 gap-2">
                                 <div className="flex justify-start items-center gap-2">
                                     <div className="rounded-full bg-gray-200 w-15 h-15 flex justify-center items-center">
-                                        <p>프로필</p>
+                                        <p>판매자</p>
                                     </div>
                                     <p>{data?.nickName}</p>
 
                                 </div>
 
                                 {/* ✅ 로그인 했고, 작성자가 아닐 경우에만 표시 */}
-                                {/*{data && currentUserId !== null && currentUserId !== data.memberId && (*/}
+                                {data && currentUserId !== null && currentUserId !== data.memberId && (
                                 <div className="flex justify-center items-center border-2 h-13 w-25 rounded-xl cursor-pointer border-gray-400 hover:font-bold">
                                     <p>채팅 하기</p>
                                 </div>
-                                {/*)}*/}
+                                )}
                             </div>
 
                             <div className="flex flex-col items-start w-full h-22 gap-2">
@@ -169,7 +169,7 @@ export default function TradePostAdd() {
                                         <div className="fixed inset-0 flex items-center justify-center bg-none">
                                             <div className="bg-white p-4 rounded-lg shadow-lg w-[530px] h-[540px] relative">
                                                 <div>
-                                                    <h2 className="text-lg text-blacknp font-semibold mb-2">지도</h2>
+                                                    <h2 className="text-lg text-black font-semibold mb-2">지도</h2>
                                                 </div>
                                                 <div className="bg-gray-200 w-[500px] h-[400px]">
                                                     <AddressMapView address={data.locate} />
@@ -250,7 +250,7 @@ export default function TradePostAdd() {
                                     <div className="flex justify-end mt-2">
                                         <button
                                             onClick={() => setSelectedImage(null)}
-                                            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+                                            className="px-4 py-2 bg-red-400 text-white rounded hover:bg-gray-700"
                                         >
                                             닫기
                                         </button>

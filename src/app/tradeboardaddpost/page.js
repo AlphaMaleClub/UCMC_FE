@@ -87,6 +87,11 @@ export default function TradeBoardAddPostPage() {
             return; // 등록 막기
         }
 
+        if(!formData.locate) {
+            alert("장소 등록을 해주세요")
+            return; // 등록 막기
+        }
+
         if (!deliveryType) {
             alert("배송 방식을 선택해주세요.");
             return; // 등록 막기
@@ -214,19 +219,7 @@ export default function TradeBoardAddPostPage() {
                             />
                         </div>
 
-                        <div className="bg-white p-1">
-                            <div className="bg-white flex justify-center items-center">
-                                <input className="w-full h-full bg-red-100 rounded-xs text-black p-1" type="text"
-                                       placeholder="키워드 등록"/>
-                            </div>
-                        </div>
 
-                        <div className="bg-white p-1">
-                            <p className="text-xs text-gray-400">카테고리 분류</p>
-                            <div className="flex justify-center items-center h-30 bg-red-100 w-full rounded-xs p-1">
-
-                            </div>
-                        </div>
 
 
                         {/* 거래 장소 */}
