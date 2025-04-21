@@ -119,7 +119,7 @@ export default function TradeBoardPage() {
                     <div className="grid grid-cols-5 gap-2">
                         {posts.map((post, index) => (
                             <div key={index} className="flex flex-col items-center w-45 h-50 p-2 text-black gap-1 rounded-xl hover:border-1 hover:border-gray-200">
-                                <Link href={`/tradePostforWriter/${post.postId}`} className="w-full h-full">
+                                <Link href={`/tradePostRead/${post.postId}`} className="w-full h-full">
                                     <div className="bg-red-100 w-full h-36 rounded-xl flex items-center justify-center overflow-hidden">
                                         {post.productImageUrl ? (
                                             <img
@@ -155,7 +155,7 @@ export default function TradeBoardPage() {
                         {/* << */}
                         {currentPage > 10 ? (
                             <Link href={`/tradeboard/${Math.max(1, currentPage - 10)}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
-                                <button className="px-3 py-1 hover:bg-emerald-300 bg-none rounded">&laquo;</button>
+                                <button className="px-3 py-1 hover:bg-red-400 bg-none rounded">&laquo;</button>
                             </Link>
                         ) : (
                             <button disabled className="px-3 py-1 rounded text-gray-400 opacity-50 cursor-not-allowed">
@@ -166,7 +166,7 @@ export default function TradeBoardPage() {
                         {/* < */}
                         {currentPage > 1 ? (
                             <Link href={`/tradeboard/${currentPage - 1}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
-                                <button className="px-3 py-1 hover:bg-emerald-300 bg-none rounded">&lt;</button>
+                                <button className="px-3 py-1 hover:bg-red-400 bg-none rounded">&lt;</button>
                             </Link>
                         ) : (
                             <button disabled className="px-3 py-1 rounded text-gray-400 opacity-50 cursor-not-allowed">
@@ -182,8 +182,8 @@ export default function TradeBoardPage() {
                                     <button
                                         className={`px-3 py-1 rounded ${
                                             currentPage === pageNumber
-                                                ? "bg-emerald-300 text-white"
-                                                : "hover:bg-emerald-100"
+                                                ? "bg-red-300 text-white"
+                                                : "hover:bg-red-400"
                                         }`}
                                     >
                                         {pageNumber}
@@ -195,7 +195,7 @@ export default function TradeBoardPage() {
                         {/* > */}
                         {currentPage < totalPages ? (
                             <Link href={`/tradeboard/${currentPage + 1}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
-                                <button className="px-3 py-1 hover:bg-emerald-300 bg-none rounded">&gt;</button>
+                                <button className="px-3 py-1 hover:bg-red-400 bg-none rounded">&gt;</button>
                             </Link>
                         ) : (
                             <button disabled className="px-3 py-1 rounded text-gray-400 opacity-50 cursor-not-allowed">
@@ -206,7 +206,7 @@ export default function TradeBoardPage() {
                         {/* >> */}
                         {currentPage + 10 <= totalPages ? (
                             <Link href={`/tradeboard/${Math.min(totalPages, currentPage + 10)}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
-                                <button className="px-3 py-1 hover:bg-emerald-300 bg-none rounded">&raquo;</button>
+                                <button className="px-3 py-1 hover:bg-red-400 bg-none rounded">&raquo;</button>
                             </Link>
                         ) : (
                             <button disabled className="px-3 py-1 rounded text-gray-400 opacity-50 cursor-not-allowed">

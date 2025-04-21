@@ -3,56 +3,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation"; // ✅ 쿼리스트링을 위한 훅 추가
 import Link from "next/link";
-import { getAllPost } from "@/service/tradeBoardService";
+import {getAllPost, getTop10Post} from "@/service/tradeBoardService";
 
 export default function TradeBoardPage() {
-    const params = useParams();
-    const currentPage = parseInt(params.page, 10);
-
-    const searchParams = useSearchParams(); // ✅ URL 쿼리 파라미터 접근
-    const router = useRouter(); // ✅ 페이지 이동을 위한 라우터
-
-    const sortParam = searchParams.get("sort") || "updatedAt,desc"; // ✅ URL에서 sort 값 가져오기 (기본값: 최신순)
-    const [sortOption, setSortOption] = useState(sortParam); // ✅ 정렬 기준을 상태로 관리
-
-    // ✅ URL에 따라 초기 selected 상태를 정함 (버튼 UI 용)
-    const getInitialSelected = () => {
-        if (sortParam === "price,asc") return "낮은가격순";
-        if (sortParam === "price,desc") return "높은가격순";
-        return "최신순";
-    };
-    const [selected, setSelected] = useState(getInitialSelected()); // UI 상태 관리
 
     const [posts, setPosts] = useState([]);
-    const [totalPages, setTotalPages] = useState(0);
-    const pageForBackend = Math.max(currentPage - 1, 0);
-
-    const groupSize = 10;
-    const currentGroup = Math.floor((currentPage - 1) / groupSize);
-    const startPage = currentGroup * groupSize + 1;
-    const endPage = Math.min(startPage + groupSize - 1, totalPages);
-
-    // 정렬 버튼 클릭 시 처리
-    const handleSortChange = (label) => {
-        setSelected(label);
-
-        let sortVal = "updatedAt,desc";
-        if (label === "낮은가격순") sortVal = "price,asc";
-        if (label === "높은가격순") sortVal = "price,desc";
-
-        setSortOption(sortVal); // 정렬 기준 상태 업데이트
-        router.push(`/tradeboard/1?sort=${sortVal}`);// ✅ URL에 쿼리 반영
-    };
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const result = await getAllPost(pageForBackend, sortOption); // 정렬 옵션 전달
-                const posts = result.tradePosts.content;
+                const result = await getTop10Post() // 정렬 옵션 전달
+                const posts = result.tradePosts;
                 const images = result.images;
-
-                console.log(posts);
-                console.log(result.images);
 
                 // null 값 필터링 후 이미지 맵 생성
                 const imageMap = new Map(
@@ -78,14 +40,13 @@ export default function TradeBoardPage() {
                 console.log(postsWithImage);
 
                 setPosts(postsWithImage);
-                setTotalPages(result.tradePosts.totalPages);
             } catch (err) {
                 console.error("❌ 데이터 불러오기 실패:", err);
             }
         }
 
         fetchData();
-    }, [currentPage, sortOption]); // 정렬 변경 시에도 재호출
+    }, []); // 정렬 변경 시에도 재호출
 
     return (
         <div className="flex w-full justify-center min-h-screen bg-white">
@@ -95,19 +56,57 @@ export default function TradeBoardPage() {
             </div>
 
             {/* 중앙 게시판 */}
-            <div className="bg-white text-black font-bold flex justify-center items-start p-2 w-18/20">
+            <div className="bg-white text-black flex justify-center items-start p-2 w-18/20">
                 <div className="bg-white w-230 h-full flex-col">
-                    <div className=" h-8 flex justify-start items-center p-2">
-                        <p>
-                            실시간 인기 상품
-                        </p>
-                    </div>
 
-                    <div className=" h-8 flex justify-start items-center p-2">
-                        <p>
+                    <div className=" h-8 flex justify-between items-center" >
+                        <p className=" p-2 font-bold">
                             최신 등록 상품
                         </p>
+
+                        <div className=" flex justify-between items-center p-2 h-5 text-xs  text-gray-800">
+                            <Link href={`/tradeboard/1`}>
+                                + 더보기
+                            </Link>
+                        </div>
+
+
                     </div>
+
+                    <div className="grid grid-cols-5 gap-2">
+                        {posts.map((post, index) => (
+                            <div key={index}
+                                 className="flex flex-col items-center w-45 h-50 p-2 text-black gap-1 rounded-xl hover:border-1 hover:border-gray-200">
+                                <Link href={`/tradePostRead/${post.postId}`} className="w-full h-full">
+                                    <div
+                                        className="bg-red-100 w-full h-36 rounded-xl flex items-center justify-center overflow-hidden">
+                                        {post.productImageUrl ? (
+                                            <img
+                                                src={post.productImageUrl}
+                                                alt="상품 이미지"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <p className="text-sm">사진 없음</p>
+                                        )}
+                                    </div>
+
+                                    <div className="flex flex-col items-start w-full p-1">
+                                        <div className="flex justify-between text-xs w-full">
+                                            <p className="truncate max-w-[50%]">{post.title}</p>
+                                            <p className="text-right text-[10px]">
+                                                {new Date(post.updatedAt).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                        <p className="font-bold text-xs mt-1">
+                                            {post.price.toLocaleString()}원
+                                        </p>
+                                    </div>
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+
 
                 </div>
             </div>
