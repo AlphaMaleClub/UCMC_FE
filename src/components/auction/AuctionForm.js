@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { createAuction, updateAuction } from "@/service/auctionService";
 import { useRouter } from "next/navigation";
 
@@ -11,9 +11,10 @@ import { useRouter } from "next/navigation";
  */
 export default function AuctionForm({ initial, auctionId }) {
   const router = useRouter();
-  // 폼 상태
+
+  // 텍스트 필드 상태
   const [form, setForm] = useState(
-    initial || {
+    initial ?? {
       title: "",
       content: "",
       price: 0,
@@ -21,26 +22,35 @@ export default function AuctionForm({ initial, auctionId }) {
       description: "",
     }
   );
-  // 등록 시에만 이미지 업로드 필수, 수정 시엔 기본 로직에서 이미지 추가는 없음
-  const [files, setFiles] = useState([]);
 
-  // input/textarea 값 갱신
-  const handleChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  // 이미지 파일 & 미리보기
+  const [files, setFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const fileInputRef = useRef(null);
+
+  const handleFiles = (arr) => {
+    const picked = arr.slice(0, 5);
+    setFiles(picked);
+    setPreviews(picked.map((f) => URL.createObjectURL(f)));
   };
+
+  const onFileChange = (e) => handleFiles(Array.from(e.target.files));
+  const onDrop = (e) => {
+    e.preventDefault();
+    handleFiles(Array.from(e.dataTransfer.files));
+  };
+
+  // 공통 핸들러
+  const handleChange = (e) =>
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
       if (auctionId) {
-        // 수정
         await updateAuction(auctionId, form);
         alert("수정이 완료되었습니다.");
       } else {
-        // 등록
         await createAuction(form, files);
         alert("경매글이 등록되었습니다.");
       }
@@ -50,8 +60,9 @@ export default function AuctionForm({ initial, auctionId }) {
     }
   }
 
+  // UI
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <input
         name="title"
         value={form.title}
@@ -94,20 +105,57 @@ export default function AuctionForm({ initial, auctionId }) {
         value={form.description}
         onChange={handleChange}
         placeholder="상품 상세 설명..."
-        className="textarea"
+        className="textarea h-32"
       />
 
-      {/* 등록 모드일 때만 이미지 업로드를 필수로 받음 */}
+      {/* 등록 모드에서만 이미지 업로드 */}
       {!auctionId && (
-        <div>
-          <label className="block font-medium mb-1">이미지 업로드 (1~5개)</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={(e) => setFiles(Array.from(e.target.files))}
-            required
-          />
+        <div className="space-y-2">
+          <label className="block font-medium">이미지 업로드 (1 ~ 5장)</label>
+
+          {/* 드래그 & 드롭 영역 */}
+          <div
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={onDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer
+                       hover:border-pink-400 transition"
+          >
+            <p className="text-sm text-gray-600">
+              클릭하거나 파일을 드래그하여 첨부
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={onFileChange}
+              className="hidden"
+              required
+            />
+          </div>
+
+          {/* 미리보기 썸네일 */}
+          {previews.length > 0 && (
+            <div className="flex gap-2">
+              {previews.map((src, i) => (
+                <div
+                  key={i}
+                  className="w-20 h-20 rounded overflow-hidden bg-gray-200"
+                >
+                  <img src={src} alt="preview" className="object-cover w-full h-full" />
+                </div>
+              ))}
+              {Array.from({ length: 5 - previews.length }).map((_, i) => (
+                <div
+                  key={`blank-${i}`}
+                  className="w-20 h-20 rounded bg-gray-100 flex items-center justify-center text-[10px] text-gray-400"
+                >
+                  + 사진
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
