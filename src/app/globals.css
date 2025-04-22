@@ -24,3 +24,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 거래, 경매게시판 공통 css로 분리했음. */
+.input         { @apply w-full bg-red-100 rounded-xs p-2 text-sm; }
+.textarea      { @apply w-full bg-red-100 rounded-xs p-2 resize-none text-sm; }
+.btn-primary   { @apply bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition text-sm; }
+.btn-danger    { @apply bg-red-500  text-white py-2 rounded-lg hover:bg-red-600  transition text-sm; }
+.btn-secondary { @apply border py-2 rounded hover:bg-gray-100 text-sm; }
