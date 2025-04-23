@@ -3,9 +3,5 @@ import {global} from "styled-jsx/css";
 import {root} from "postcss";
 
 export default function Home() {
-  return (
-    <div>
-        <h1>안녕</h1>
-    </div>
-  );
+  return <h1>루트페이지 본문입니다.</h1>
 }
