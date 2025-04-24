@@ -15,7 +15,7 @@ export default function Login (){
             <div className = "h-108 w-108 bg-red-100" >
                 <form>
                     <input
-                        type="ID"
+                        type="text"
                         placeholder="ID"
                         className="block w-full p-2 border"
                         value ={ID}
