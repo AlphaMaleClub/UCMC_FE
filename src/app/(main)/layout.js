@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import Link from "next/link";
+import AuthButton from "@/components/auth/NavbarAuthButton";
+import MyPageButton from "@/components/auth/NavbarMyPageButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +23,9 @@ export default function RootLayout({ children }) {
   return (
       <div>
         <nav className="bg-gray-600">
-          <Link href = "/login"> 로그인 </Link>
+          <AuthButton />
+
+          <MyPageButton />
           {/* <h1>아래 로그인</h1>
           <ui>
             <li><Link href="http://localhost:8080/oauth2/initiate?intent=login&provider=naver">naver</Link></li>

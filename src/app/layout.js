@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import AccessTokenSync from "@/components/auth/AccessTokenSync";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,8 +20,8 @@ export const metadata = {
 export default function MainLayout({ children }) {
   return (
     <html lang="en">
-
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AccessTokenSync />
         {children}
       </body>
 

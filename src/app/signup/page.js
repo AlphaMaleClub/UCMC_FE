@@ -1,15 +1,17 @@
 // 백에서 Oauth2.0 정보 있으면 가져오고 없으면 그냥 전부 공란으로 처리할 것. 
 "use client";
 import "../globals.css";
-
+import useAccessGuard from "@/hooks/useAccessGuard";
 import Link from "next/link"
-import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { signup } from "@/service/MemberService"
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signup } from "@/service/MemberService"
 
 export default function Signup () {
-    
+
+    useAccessGuard( {requireLogin: false});
+
     const router = useRouter();
 
     const handleSubmit = async (e) => {
@@ -17,8 +19,11 @@ export default function Signup () {
         e.preventDefault();
         
         try{
-        const success = await signup(Form);
-        router.push("/login");
+
+            await signup(Form);
+
+            router.push("/login");
+
         }catch(err){
 
             router.push("/");
@@ -27,16 +32,12 @@ export default function Signup () {
 
     };
 
-
-    const OAuth2BaseURL = "/oauth2/initiate";
     const searchParams = useSearchParams();
-
     const defaultProvier = searchParams.get("provider") || "none";
     const defaultAccountId = searchParams.get("accountId") || "";
     const defalutnickname = searchParams.get("nickname")|| "";
     const defaultEmail = searchParams.get("email") || "";
-    const defaultName = searchParams.get("name") || "";
-    
+    const defaultName = searchParams.get("realName") || "";
 
     /*
 
@@ -107,9 +108,6 @@ export default function Signup () {
                     </button>
                 </form>
                 
-                <Link href = "/signup">회원가입</Link>
-                
-
             </div>
         </div>
     )
