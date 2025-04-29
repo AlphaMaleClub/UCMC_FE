@@ -8,7 +8,6 @@ export default function KakaoMap({ onSelectLocation }) {
     const markerRef = useRef(null)
     const [coords, setCoords] = useState(null)
 
-
     useEffect(() => {
         // 페이지르 떠날시 sessionStorage 삭제
         // beforeunload는 새로고침이 아니라 페이지를 떠나는 자체 만으로도 적용됨

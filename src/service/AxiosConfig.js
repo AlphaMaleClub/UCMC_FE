@@ -36,12 +36,12 @@ axiosAuthRequest.interceptors.request.use((config) => {
     return config;
 });
 
-
 /* 
     accessToken을 요청하고 받은 반환값(response)을 가로채서(인터셉트)
     해당 오류가 accessToken만료로 인한 반환값이면 refreshToken을 통해 다시 accessToken을 발급받고 자동으로 그걸 요청에 넣어서 보냄
     그리고 그 요청에서 실패한다면 세션만료로 인한 로그아웃 처리하기. 
 */
+
 axiosAuthRequest.interceptors.response.use(
     (response) => response,
     async (error) => {
