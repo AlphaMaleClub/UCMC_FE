@@ -35,7 +35,7 @@ export default async function AuctionList({ searchParams }) {
       {/* 페이지네이션 버튼 */}
       <div className="flex gap-2 justify-center mt-4">
         {Array.from({ length: totalPages }, (_, i) => (
-          <a
+          <Link
             key={i}
             href={`?page=${i}&ongoingOnly=${ongoingOnly}`}
             className={`px-3 py-1 border rounded ${
@@ -43,7 +43,7 @@ export default async function AuctionList({ searchParams }) {
             }`}
           >
             {i + 1}
-          </a>
+          </Link>
         ))}
       </div>
     </main>

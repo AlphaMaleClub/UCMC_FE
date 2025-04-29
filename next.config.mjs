@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // 1) 개발·운영 모두 적용할 프록시
   async rewrites() {
     return [

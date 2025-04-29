@@ -1,16 +1,15 @@
+import { axiosAuthRequest, axiosDefaultRequest } from "./AxiosConfig"
+
+
+
 export const createTradePost = async (formData) => {
-    const response = await fetch("http://localhost:8080/api/Trade/createPost",{
-        method: "POST",
-        body: formData,
-    })
+    const response = await axiosAuthRequest.post("api/Trade/createPost", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 
-    console.log("fetch",response)
-
-    if (!response.ok) {
-        throw new Error("게시글 작성 실패")
-    }
-
-    return await response.json()
+    return response.data;
 }
 
 export const getTop10Post = async () => {
