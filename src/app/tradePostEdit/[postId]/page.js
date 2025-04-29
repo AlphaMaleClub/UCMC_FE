@@ -1,10 +1,47 @@
 'use client';
 
 import React, {useState,useEffect} from "react";
-import {createTradePost} from "@/service/tradeBoardService";
+import {createTradePost, getPostInfoAndImages, updateTradePost} from "@/service/tradeBoardService";
 import KakaoMap from "@/components/kakaomap";
+import {useParams} from "next/navigation";
+import { useRouter } from 'next/navigation';
 
 export default function TradeBoardAddPostPage() {
+
+    const { postId } = useParams();
+
+    const [baseData, setBaseData] = useState(null);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!postId) return;
+
+        const fetchPost = async () => {
+            try {
+                const result = await getPostInfoAndImages(postId);
+                setBaseData(result); // 기존 data 저장
+
+                // ✅ formData.title에 데이터 반영
+                setFormData((prev) => ({
+                    ...prev,
+                    title: result.title || "", // title이 undefined일 수도 있으니까 대비
+                    price: result.price?.toLocaleString() || "",
+                    content: result.content || "",
+                    locate: result.locate || "",
+                    bumpedCount : result.bumpedCount || ""
+
+                }));
+
+
+            } catch (err) {
+                console.error("게시글 불러오기 실패", err);
+            }
+        };
+
+        fetchPost();
+    }, [postId]);
+
 
     const [formData, setFormData] = useState({
         title: "",
@@ -87,11 +124,6 @@ export default function TradeBoardAddPostPage() {
             return; // 등록 막기
         }
 
-        if(!formData.locate) {
-            alert("장소 등록을 해주세요")
-            return; // 등록 막기
-        }
-
         if (!deliveryType) {
             alert("배송 방식을 선택해주세요.");
             return; // 등록 막기
@@ -100,13 +132,13 @@ export default function TradeBoardAddPostPage() {
         // 콤마 제거
         const rawPrice = formData.price.replace(/,/g, "");
 
-        // 가공된 formData 생성
         const cleanFormData = {
             ...formData,
             price: Number(rawPrice),
-            deliveryType: deliveryType  // ✅ 이 줄 추가
+            deliveryType: deliveryType,
+            status: baseData?.status,
+            bumpedCount: baseData?.bumpedCount,
         };
-
         const data = new FormData();
 
         const jsonBlob = new Blob([JSON.stringify(cleanFormData)], {
@@ -117,11 +149,26 @@ export default function TradeBoardAddPostPage() {
         data.append('data', jsonBlob);
         images.forEach((file) => data.append('images', file));
 
-        const result = await createTradePost(data);
+        console.log("🧾 formData 이미지 확인:");
+        images.forEach((img, i) => console.log(`${i + 1}:`, img.name, img.size));
+
+        for (let [key, value] of data.entries()) {
+            if (value instanceof File) {
+                console.log("📷 file field:", key, value.name);
+            } else if (value instanceof Blob) {
+                value.text().then((text) => {
+                    console.log("📦 blob field:", key, text);
+                });
+            }
+        }
+
+        const result = await updateTradePost(postId,data);
+
         if (result) {
-            alert('등록 성공!');
+            alert('수정 성공!');
+            router.push(`/tradePostRead/${postId}`);
         } else {
-            alert('등록 실패');
+            alert('수정 실패');
         }
     };
 
@@ -218,8 +265,7 @@ export default function TradeBoardAddPostPage() {
                                 placeholder="가격"
                             />
                         </div>
-
-
+                        
 
 
                         {/* 거래 장소 */}
