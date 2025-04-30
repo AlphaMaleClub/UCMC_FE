@@ -25,19 +25,6 @@ export const getTop10Post = async () => {
     return await response.json()
 }
 
-export const getTop10Post = async () => {
-    const response = await fetch("http://localhost:8080/api/Trade/Top10Post",{
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-
-    console.log("fetch",response)
-
-    return await response.json()
-}
-
 export const getAllPost = async (page, sort) => {
     const response = await fetch(`http://localhost:8080/api/Trade/readAllPost?page=${page}&sort=${sort}`, {
         method: "GET",

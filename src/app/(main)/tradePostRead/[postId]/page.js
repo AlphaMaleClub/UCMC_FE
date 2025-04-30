@@ -7,12 +7,28 @@ import AddressMapView from "@/components/ViewMapFromAddress";
 import { useRouter } from 'next/navigation';
 import Dropdown from "@/components/Dropdown";
 import Link from 'next/link';
+import CommentSection from '../../../components/comment/CommentSection';
+import { countComments } from '../../../components/comment/CommentUtils';
 
 export default function TradePostAdd() {
     const router = useRouter();
     const { postId } = useParams();
     const [data, setData] = useState(null);
     const [currentUserId, setCurrentUserId] = useState(null); // ✅ JWT에서 로그인 유저 ID 추출용
+
+    //댓글
+    const [comments, setComments] = useState([]);
+    const [content, setContent] = useState('');
+    const [replyingToCommentId, setReplyingToCommentId] = useState(null);
+    const [user, setUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        const auth = localStorage.getItem('isAuthenticated') === 'true';
+        setUser(storedUser);
+        setIsAuthenticated(auth);
+    }, []);
 
     const statusTextMap = {
         ON_SALE: "판매중",
@@ -96,14 +112,91 @@ export default function TradePostAdd() {
         }
     };
 
+    // 댓글
+
+    const handleCommentSubmit = async (e, parentId) => {
+        if (!isAuthenticated) {
+            alert('로그인이 필요합니다.');
+            navigate('/login');
+            return;
+        }
+        e.preventDefault();
+        if (!content.trim()) {
+            return;
+        }
+        try {
+            console.log("유저정보", user);
+            const commentRequest = {
+                author: user.id,
+                content: content,
+                postId: postId,
+                parentId: parentId,
+            }
+            await api.post(`/api/posts/${postId}/comments`, commentRequest);
+            setContent('');
+            setReplyingToCommentId(null);
+
+            // 댓글 추가 후 댓글 리스트 새로고침
+            const commentsResponse = await axios.get(`/api/posts/${postId}/comments`);
+            setComments(commentsResponse.data);
+        } catch (error) {
+            console.error('댓글 제출 오류:', error)
+        }
+    };
+
+    const handleReplyButtonClick = (commentId) => {
+        console.log("댓글 실행", replyingToCommentId);
+        if (replyingToCommentId === commentId) {
+            setReplyingToCommentId(null);
+        } else {
+            setReplyingToCommentId(commentId);
+        }
+    };
+    // 댓글 삭제
+    const handleDelete = async (commentId) => {
+        if (!isAuthenticated) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+
+        try {
+            await api.delete(`/api/posts/${postId}/comments/${commentId}`);
+            // 댓글 삭제 후 댓글 리스트 새로고침
+            const commentsResponse = await axios.get(`/api/posts/${postId}/comments`);
+            setComments(commentsResponse.data);
+        } catch (error) {
+            alert("사용자 권한이 없습니다");
+            console.error('댓글 삭제 오류:', error);
+        }
+    };
+
+    // 채팅 시작
+
+    const chatStart = async (commentAuthor) => {
+        if (!isAuthenticated) {
+            alert('로그인이 필요합니다.');
+            navigate('/login');
+            return;
+        }
+        try {
+            console.log("채팅방 생성 작성자 , 상대", user.name)
+            const createChatRoomResponse = await api.post('/api/chatroom', { memberName: user.name, opponentName: commentAuthor })
+            navigate(`/chat/${createChatRoomResponse.data}`);
+        } catch (error) {
+            alert("사용자 권한이 없습니다");
+            console.error('채팅방 생성 오류:', error);
+        }
+    }
+
+
     return (
-        <div className="flex w-full justify-center h-210 bg-white">
+        <div className="flex w-full justify-center h-full bg-white">
             {/* 왼쪽 여백 공간 */}
             <div className="bg-gray-50 w-1/20 h-full p-1">
                 <h3>section 1</h3>
             </div>
 
-            <div className="bg-white w-18/20 h-210 flex flex-col items-center">
+            <div className="bg-white w-18/20 h-full flex flex-col items-center">
                 <div className="bg-white w-230 h-full flex flex-col items-center gap-2">
                     <div className="bg-white h-5"></div>
 
@@ -150,9 +243,9 @@ export default function TradePostAdd() {
 
                                 {/* ✅ 로그인 했고, 작성자가 아닐 경우에만 표시 */}
                                 {data && currentUserId !== null && currentUserId !== data.memberId && (
-                                <div className="flex justify-center items-center border-2 h-13 w-25 rounded-xl cursor-pointer border-gray-400 hover:font-bold">
-                                    <p>채팅 하기</p>
-                                </div>
+                                    <div className="flex justify-center items-center border-2 h-13 w-25 rounded-xl cursor-pointer border-gray-400 hover:font-bold">
+                                        <p>채팅 하기</p>
+                                    </div>
                                 )}
                             </div>
 
@@ -193,20 +286,20 @@ export default function TradePostAdd() {
 
                             {/*/!* 글쓴이일 경우에만 노출 *!/*/}
                             {/*{data && currentUserId === data.memberId && (*/}
-                                <div className="bg-gray-100 rounded-xl w-full h-18 flex justify-center items-center">
-                                    <div className="w-1/4 h-full flex justify-center items-center text-sm">
-                                        <button onClick={handleBump} className="hover:font-bold cursor-pointer">끌어 올리기</button>
-                                    </div>
-                                    <div className="w-1/4 h-full flex justify-center items-center text-sm hover:font-bold cursor-pointer">
-                                        <Link href={`/tradePostEdit/${postId}`}>
-                                            상품 수정
-                                        </Link>
-                                    </div>
-                                    <div className="w-1/4 h-full flex justify-center items-center text-sm"></div>
-                                    <div className="w-1/4 h-full flex justify-center items-center text-sm">
-                                        <button onClick={handleDeletePost} className="hover:font-bold cursor-pointer">게시글 삭제</button>
-                                    </div>
+                            <div className="bg-gray-100 rounded-xl w-full h-18 flex justify-center items-center">
+                                <div className="w-1/4 h-full flex justify-center items-center text-sm">
+                                    <button onClick={handleBump} className="hover:font-bold cursor-pointer">끌어 올리기</button>
                                 </div>
+                                <div className="w-1/4 h-full flex justify-center items-center text-sm hover:font-bold cursor-pointer">
+                                    <Link href={`/tradePostEdit/${postId}`}>
+                                        상품 수정
+                                    </Link>
+                                </div>
+                                <div className="w-1/4 h-full flex justify-center items-center text-sm"></div>
+                                <div className="w-1/4 h-full flex justify-center items-center text-sm">
+                                    <button onClick={handleDeletePost} className="hover:font-bold cursor-pointer">게시글 삭제</button>
+                                </div>
+                            </div>
                             {/*)}*/}
                         </div>
                     </div>
@@ -219,7 +312,7 @@ export default function TradePostAdd() {
                         </div>
                     </div>
 
-                    <div className="w-full">
+                    <div className="w-full " >
                         <h3 className="text-black mb-2">첨부 사진</h3>
                         <div className="flex flex-wrap gap-2 items-center p-1">
                             {data?.productImages?.length > 0 &&
@@ -236,6 +329,10 @@ export default function TradePostAdd() {
                                         />
                                     </div>
                                 ))}
+                        </div>
+                    
+
+
                         </div>
 
                         {selectedImage && (
@@ -258,7 +355,27 @@ export default function TradePostAdd() {
                                 </div>
                             </div>
                         )}
+
+<div className="w-full">
+                     <CommentSection
+                            comments={comments}
+                            isAuthenticated={isAuthenticated}
+                            content={content}
+                            setContent={setContent}
+                            handleCommentSubmit={handleCommentSubmit}
+                            handleReplyButtonClick={handleReplyButtonClick}
+                            handleDelete={handleDelete}
+                            setComments={setComments}
+                            countComments={countComments}
+                            navigate={router}
+                            replyingToCommentId={replyingToCommentId}
+                            chatStart={chatStart}
+                        />
+                     </div>
                     </div>
+                     {/* 댓글섹션 */}
+                     
+                <div>
 
                     <div className="bg-white h-5"></div>
                 </div>
@@ -266,7 +383,7 @@ export default function TradePostAdd() {
 
             {/* 우측 여백 공간 */}
             <div className="bg-gray-50 w-1/20 h-full">
-                <h3>section 3</h3>
+                <h3>sectiondd 3</h3>
             </div>
         </div>
     );
