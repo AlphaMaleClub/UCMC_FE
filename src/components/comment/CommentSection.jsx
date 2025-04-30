@@ -16,6 +16,7 @@ const CommentSection = ({
     replyingToCommentId,
     chatStart
 }) => {
+
     return (
         <div className="max-w-2xl mx-auto mt-8 text-black">
             {/* 댓글 입력창 */}

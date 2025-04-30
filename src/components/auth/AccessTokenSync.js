@@ -14,9 +14,13 @@ export default function AccessTokenSync() {
   
   const pathname = usePathname();
 
+
   useEffect(() => {
 
     const cookieString = document.cookie;
+    const existAccessToken = localStorage.getItem("accessToken");
+
+    
 
     const token = cookieString
       .split("; ")
@@ -26,10 +30,19 @@ export default function AccessTokenSync() {
     if (token) {
 
       localStorage.setItem("accessToken", token);
+      
+      
       document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
     }
+
     
+    localStorage.setItem("isAuthenticated", existAccessToken ? "true" : "false");
+    
+    
+
+
+
   }, [pathname]);
 
   return null; // 렌더링 안함
