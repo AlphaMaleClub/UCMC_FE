@@ -28,6 +28,8 @@ export default function Login (){
             alert("로그인 성공했습니다.");
             SetisLogined(true)
             
+            localStorage.setItem("isAuthenticated", isLogined ? "true" : "false");
+
             router.push("/")
 
         }catch(err){

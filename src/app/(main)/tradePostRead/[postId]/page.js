@@ -7,8 +7,8 @@ import AddressMapView from "@/components/ViewMapFromAddress";
 import { useRouter } from 'next/navigation';
 import Dropdown from "@/components/Dropdown";
 import Link from 'next/link';
-import CommentSection from '../../../components/comment/CommentSection';
-import { countComments } from '../../../components/comment/CommentUtils';
+import CommentSection from '@/components/comment/CommentSection';
+import { countComments } from '@/components/comment/CommentUtils';
 
 export default function TradePostAdd() {
     const router = useRouter();
