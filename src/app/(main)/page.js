@@ -41,7 +41,7 @@ export default function TradeBoardPage() {
 
                 setPosts(postsWithImage);
             } catch (err) {
-                console.error("❌ 데이터 불러오기 실패:", err);
+                console.error("데이터 불러오기 실패:", err);
             }
         }
 
@@ -51,12 +51,11 @@ export default function TradeBoardPage() {
     return (
         <div className="flex w-full justify-center min-h-screen bg-white">
             {/* 왼쪽 여백 */}
-            <div className="bg-white w-1/20 h-full p-1">
-                <h3>section 1</h3>
+            <div className="bg-white w-1/20 min-h-screen  p-1">
             </div>
 
             {/* 중앙 게시판 */}
-            <div className="bg-white text-black flex justify-center items-start p-2 w-18/20">
+            <div className="bg-white text-black flex min-h-screen  justify-center items-start p-2 w-18/20">
                 <div className="bg-white w-230 h-full flex-col">
 
                     <div className=" h-8 flex justify-between items-center" >
@@ -112,8 +111,7 @@ export default function TradeBoardPage() {
             </div>
 
             {/* 오른쪽 여백 */}
-            <div className="bg-gray-50 w-1/20 h-full">
-                <h3>section 3</h3>
+            <div className="bg-white w-1/20 min-h-screen ">
             </div>
         </div>
     );

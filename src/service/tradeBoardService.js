@@ -3,7 +3,7 @@ import { axiosAuthRequest, axiosDefaultRequest } from "./AxiosConfig"
 
 
 export const createTradePost = async (formData) => {
-    const response = await axiosAuthRequest.post("api/Trade/createPost", formData, {
+    const response = await axiosAuthRequest.post("api/trade-posts", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -13,8 +13,7 @@ export const createTradePost = async (formData) => {
 }
 
 export const getTop10Post = async () => {
-    const response = await fetch("http://localhost:8080/api/Trade/Top10Post",{
-        method: "GET",
+    const response = await axiosAuthRequest.get("http://localhost:8080/api/trade-posts/top10",{
         headers: {
             "Content-Type": "application/json",
         },
@@ -22,12 +21,11 @@ export const getTop10Post = async () => {
 
     console.log("fetch",response)
 
-    return await response.json()
+    return response.data
 }
 
 export const getAllPost = async (page, sort) => {
-    const response = await fetch(`http://localhost:8080/api/Trade/readAllPost?page=${page}&sort=${sort}`, {
-        method: "GET",
+    const response = await axiosAuthRequest.get(`http://localhost:8080/api/trade-posts?page=${page}&sort=${sort}`, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -35,107 +33,77 @@ export const getAllPost = async (page, sort) => {
 
     console.log("📡 응답 상태코드:", response.status);
 
-    if (!response.ok) {
+    if (!response.status) {
         throw new Error("모든 게시글 조회 실패");
     }
 
-    return await response.json();
+    return response.data
 };
 
 export const getPostInfoAndImages = async (postId) => {
-    const response = await fetch(`http://localhost:8080/api/Trade/readPost/${postId}`, {
-        method: "GET",
+    const response = await axiosAuthRequest.get(`http://localhost:8080/api/trade-posts/${postId}`, {
         headers: {
             "Content-Type": "application/json",
         },
     });
 
-    if (!response.ok) {
+    if (!response.status) {
         throw new Error("게시글 조회 실패");
     }
 
-    return await response.json();
+    return response.data
 };
 
 export const bumpPost = async (postId) => {
-    const response = await fetch(`http://localhost:8080/api/Trade/bumpPost/${postId}`, {
-        method: "PUT" ,
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    try {
+        const response = await axiosAuthRequest.put(`/api/trade-posts/${postId}/bump`);
+        return response.data;
 
-    if (!response.ok) {
+    } catch (err) {
+
+        console.error("끌어올리기 실패:", err);
         throw new Error("끌어올리기 실패");
     }
-
-    return await response.json();
-
-}
+};
 
 export const deletePost = async (postId) => {
-    const response = await fetch(`http://localhost:8080/api/Trade/deletePost/${postId}`, {
-        method: "DELETE",
+    const response = await axiosAuthRequest.delete(`http://localhost:8080/api/trade-posts/${postId}`, {
         headers: {
             "Content-Type": "application/json"
         },
     });
 
-    if (!response.ok) {
+    if (!response.status) {
         throw new Error("게시글 삭제 실패");
     }
 
-    return await response.json();
+    return response.data
 }
 
 export const updateOnlyStatusTradePost = async (postId, status) => {
-    const response = await fetch(`http://localhost:8080/api/Trade/updatePostStatus/${postId}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status })
-    })
+    const response = await axiosAuthRequest.put(
+        `http://localhost:8080/api/trade-posts/${postId}/status`,
+        { status }, // ← JSON body
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
 
-    if (!response.ok) {
-        throw new Error("게시글 상태 변경 실패");
-    }
-
-    return await response.json();
-}
-
-export const updateTradePost = async (postId, formData) => {
-
-    const response = await fetch(`http://localhost:8080/api/Trade/updatePost/${postId}`, {
-        method: "PUT",
-
-        body: formData // ✅ headers 생략 필수!
-    });
-
-    console.log("front 서비스 도착")
-    console.log(postId)
-    console.log(formData)
-    console.log("fetch",response)
-
-    if (!response.ok) {
-        throw new Error(`수정 실패: ${response.status}`);
-    }
-
-    return await response.json();
+    return response.data;
 };
 
-export const getOnlyProductImage = async (postId) => {
+export const updateTradePost = async (postId, formData) => {
+    const response = await axiosAuthRequest.put(
+        `http://localhost:8080/api/trade-posts/${postId}`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
 
-    const response = await  fetch(`http://localhost:8080/api/Trade/getOnlyFirstImage/${postId}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error("개별 이미지 조회 실패");
-    }
-
-    return await response.json();
-}
+    return response.data;
+};

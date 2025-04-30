@@ -139,6 +139,8 @@ export default function TradeBoardAddPostPage() {
             status: baseData?.status,
             bumpedCount: baseData?.bumpedCount,
         };
+
+        console.log(cleanFormData)
         const data = new FormData();
 
         const jsonBlob = new Blob([JSON.stringify(cleanFormData)], {
