@@ -12,7 +12,7 @@ export default function TradePostAdd() {
     const router = useRouter();
     const { postId } = useParams();
     const [data, setData] = useState(null);
-    const [currentUserId, setCurrentUserId] = useState(null); // ✅ JWT에서 로그인 유저 ID 추출용
+    const [currentUserId, setCurrentUserId] = useState(null); // JWT에서 로그인 유저 ID 추출용
 
     const statusTextMap = {
         ON_SALE: "판매중",
@@ -30,13 +30,18 @@ export default function TradePostAdd() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
-    // ✅ JWT에서 userId 추출
+    // JWT에서 userId 추출
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("accessToken");
         if (token) {
             try {
                 const payload = JSON.parse(atob(token.split(".")[1]));
-                setCurrentUserId(payload.userId); // ⚠ 서버에서 어떤 키로 userId를 넣었는지 확인 필요
+                // 페이로드에서 sub 즉 userId를 가져옴
+                setCurrentUserId(payload.sub);
+                console.log("페이로드 userid",payload.sub);
+                console.log("페이로드",payload)
+
+
             } catch (e) {
                 console.error("JWT 파싱 실패", e);
             }
@@ -97,13 +102,12 @@ export default function TradePostAdd() {
     };
 
     return (
-        <div className="flex w-full justify-center h-210 bg-white">
+        <div className="flex w-full justify-center min-h-screen bg-white">
             {/* 왼쪽 여백 공간 */}
             <div className="bg-gray-50 w-1/20 h-full p-1">
-                <h3>section 1</h3>
             </div>
 
-            <div className="bg-white w-18/20 h-210 flex flex-col items-center">
+            <div className="bg-white w-18/20 min-h-screen flex flex-col items-center">
                 <div className="bg-white w-230 h-full flex flex-col items-center gap-2">
                     <div className="bg-white h-5"></div>
 
@@ -120,16 +124,26 @@ export default function TradePostAdd() {
                         </div>
 
                         <div className=" w-120 h-90 flex flex-col items-start text-black gap-2">
-                            <div className="flex w-full justify-between items-center">
-                                <p className="text-lg font-semibold">{data?.title}</p>
+                            <div className="flex w-full h-15 justify-between items-center">
+                                <p className="text-lg w-full font-semibold">{data?.title}</p>
 
-                                <div>
+                                <div className="w-30">
+                                    {data && currentUserId !== null && Number(currentUserId) !== data.memberId && (
+                                        <div className=" flex justify-center text-xs items-center text-black w-40 h-8 rounded-2xl border-2 border-gray-200 w-full ">
+                                            <p>
+                                                {statusTextMap[data?.status]}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {data && Number(currentUserId) === data.memberId && (
                                     <Dropdown
                                         status={statusTextMap[data?.status]}
                                         options={statusTextMap}
                                         selected={status}
                                         onChange={handleStatusChange}
                                     />
+                                    )}
                                 </div>
                             </div>
 
@@ -148,9 +162,9 @@ export default function TradePostAdd() {
 
                                 </div>
 
-                                {/* ✅ 로그인 했고, 작성자가 아닐 경우에만 표시 */}
-                                {data && currentUserId !== null && currentUserId !== data.memberId && (
-                                <div className="flex justify-center items-center border-2 h-13 w-25 rounded-xl cursor-pointer border-gray-400 hover:font-bold">
+                                {/* 로그인 했고, 작성자가 아닐 경우에만 표시 */}
+                                {data && currentUserId !== null && Number(currentUserId) !== data.memberId && (
+                                    <div className="flex justify-center text-xs items-center border-2 h-10 w-25 rounded-2xl cursor-pointer border-gray-200 hover:font-bold">
                                     <p>채팅 하기</p>
                                 </div>
                                 )}
@@ -191,8 +205,9 @@ export default function TradePostAdd() {
 
 
 
-                            {/*/!* 글쓴이일 경우에만 노출 *!/*/}
-                            {/*{data && currentUserId === data.memberId && (*/}
+                            {/*작성자 일 경우 표시*/}
+                            {data && Number(currentUserId) === data.memberId && (
+
                                 <div className="bg-gray-100 rounded-xl w-full h-18 flex justify-center items-center">
                                     <div className="w-1/4 h-full flex justify-center items-center text-sm">
                                         <button onClick={handleBump} className="hover:font-bold cursor-pointer">끌어 올리기</button>
@@ -207,14 +222,14 @@ export default function TradePostAdd() {
                                         <button onClick={handleDeletePost} className="hover:font-bold cursor-pointer">게시글 삭제</button>
                                     </div>
                                 </div>
-                            {/*)}*/}
+                            )}
                         </div>
                     </div>
 
                     <div className="w-full h-2 rounded-xl"></div>
 
-                    <div className="w-full h-80 bg-red-100 rounded-xl flex justify-center items-center">
-                        <div className="w-19/20 h-9/10 text-black text-sm">
+                    <div className="w-full h-80 rounded-xl flex justify-center items-center bg-red-100 rounded-2xl">
+                        <div className=" w-19/20 h-9/10 text-black text-sm">
                             <h3>{data?.content}</h3>
                         </div>
                     </div>
@@ -265,8 +280,7 @@ export default function TradePostAdd() {
             </div>
 
             {/* 우측 여백 공간 */}
-            <div className="bg-gray-50 w-1/20 h-full">
-                <h3>section 3</h3>
+            <div className="bg-gray-50 w-1/20 min-h-screen">
             </div>
         </div>
     );

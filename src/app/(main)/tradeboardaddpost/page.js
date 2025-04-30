@@ -3,8 +3,10 @@
 import React, {useState,useEffect} from "react";
 import {createTradePost} from "@/service/tradeBoardService";
 import KakaoMap from "@/components/kakaomap";
+import { useRouter } from "next/navigation";
 
 export default function TradeBoardAddPostPage() {
+    const router = useRouter();
 
     const [formData, setFormData] = useState({
         title: "",
@@ -120,9 +122,12 @@ export default function TradeBoardAddPostPage() {
         const result = await createTradePost(data);
         if (result) {
             alert('등록 성공!');
+            router.push("/");
         } else {
             alert('등록 실패');
         }
+
+
     };
 
     const handleDeliveryChange = (e) => {

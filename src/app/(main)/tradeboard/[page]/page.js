@@ -91,7 +91,6 @@ export default function TradeBoardPage() {
         <div className="flex w-full justify-center min-h-screen bg-white">
             {/* 왼쪽 여백 */}
             <div className="bg-white w-1/20 h-full p-1">
-                <h3>section 1</h3>
             </div>
 
             {/* 중앙 게시판 */}
@@ -99,28 +98,41 @@ export default function TradeBoardPage() {
                 <div className="bg-white w-230 h-full flex-col">
                     {/* 정렬 옵션 */}
                     <div className="flex justify-between items-center">
-                        <h1 className="text-black p-1 py-4 font-semibold text-base">중고 매매 리스트</h1>
-                        <div className="flex items-center gap-2 p-1 py-4 font-semibold text-xs">
-                            {["최신순", "낮은가격순", "높은가격순"].map((label) => (
-                                <React.Fragment key={label}>
-                                    <button
-                                        onClick={() => handleSortChange(label)}
-                                        className={selected === label ? "text-black" : "text-gray-400"}
-                                    >
-                                        {label}
-                                    </button>
-                                    {label !== "높은가격순" && <p>|</p>}
-                                </React.Fragment>
-                            ))}
+                        <h1 className="text-black flex justify-start items-center w-full p-1 py-4 font-semibold text-base">중고 매매 리스트</h1>
+                        <div className="w-full h-full flex justify-end items-center gap-2">
+
+                            <div className="flex items-center gap-2 p-1 py-4 font-semibold text-xs">
+                                {["최신순", "낮은가격순", "높은가격순"].map((label) => (
+                                    <React.Fragment key={label}>
+                                        <button
+                                            onClick={() => handleSortChange(label)}
+                                            className={selected === label ? "text-black" : "text-gray-400"}
+                                        >
+                                            {label}
+                                        </button>
+                                        {label !== "높은가격순" && <p>|</p>}
+                                    </React.Fragment>
+                                ))}
+                            </div>
+                            <div>
+                                <Link href={`/tradeboardaddpost`}>
+                                    <p className=" flex justify-center items-center text-xs w-20 h-10 border-2 border-red-200 rounded-2xl gap-2 p-1 py-4 hover:cursor-pointer bg-red-100 hover:bg-red-400">
+                                        등록하기
+                                    </p>
+                                </Link>
+                            </div>
                         </div>
+
                     </div>
 
                     {/* 게시글 리스트 */}
                     <div className="grid grid-cols-5 gap-2">
                         {posts.map((post, index) => (
-                            <div key={index} className="flex flex-col items-center w-45 h-50 p-2 text-black gap-1 rounded-xl hover:border-1 hover:border-gray-200">
+                            <div key={index}
+                                 className="flex flex-col items-center w-45 h-50 p-2 text-black gap-1 rounded-xl hover:border-1 hover:border-gray-200">
                                 <Link href={`/tradePostRead/${post.postId}`} className="w-full h-full">
-                                    <div className="bg-red-100 w-full h-36 rounded-xl flex items-center justify-center overflow-hidden">
+                                    <div
+                                        className="bg-red-100 w-full h-36 rounded-xl flex items-center justify-center overflow-hidden">
                                         {post.productImageUrl ? (
                                             <img
                                                 src={post.productImageUrl}
@@ -218,8 +230,7 @@ export default function TradeBoardPage() {
             </div>
 
             {/* 오른쪽 여백 */}
-            <div className="bg-gray-50 w-1/20 h-full">
-                <h3>section 3</h3>
+            <div className="bg-white w-1/20 h-full">
             </div>
         </div>
     );
