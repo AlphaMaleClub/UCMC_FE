@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useState,useEffect} from "react";
-import {createTradePost, getPostInfoAndImages, updateTradePost} from "@/service/tradeBoardService";
+import {getPostInfoAndImages, updateTradePost} from "@/service/tradeBoardService";
 import KakaoMap from "@/components/kakaomap";
 import {useParams} from "next/navigation";
 import { useRouter } from 'next/navigation';
@@ -22,17 +22,15 @@ export default function TradeBoardAddPostPage() {
                 const result = await getPostInfoAndImages(postId);
                 setBaseData(result); // 기존 data 저장
 
-                // ✅ formData.title에 데이터 반영
                 setFormData((prev) => ({
                     ...prev,
-                    title: result.title || "", // title이 undefined일 수도 있으니까 대비
+                    title: result.title || "",
                     price: result.price?.toLocaleString() || "",
                     content: result.content || "",
                     locate: result.locate || "",
                     bumpedCount : result.bumpedCount || ""
 
                 }));
-
 
             } catch (err) {
                 console.error("게시글 불러오기 실패", err);
@@ -149,17 +147,17 @@ export default function TradeBoardAddPostPage() {
 
         //data에 담기
         data.append('data', jsonBlob);
+
         images.forEach((file) => data.append('images', file));
 
-        console.log("🧾 formData 이미지 확인:");
         images.forEach((img, i) => console.log(`${i + 1}:`, img.name, img.size));
 
         for (let [key, value] of data.entries()) {
             if (value instanceof File) {
-                console.log("📷 file field:", key, value.name);
+
             } else if (value instanceof Blob) {
+
                 value.text().then((text) => {
-                    console.log("📦 blob field:", key, text);
                 });
             }
         }
@@ -187,12 +185,7 @@ export default function TradeBoardAddPostPage() {
         } else {
             setDeliveryType(''); // 선택 해제 시
         }
-
     };
-
-
-
-
 
     return (
         <form onSubmit={handleSubmit}>
@@ -202,7 +195,6 @@ export default function TradeBoardAddPostPage() {
                 <div className="bg-white w-1/20 h-full p-1">
                     <h3>section 1</h3>
                 </div>
-
 
                 <div className="flex bg-white justify-center items-center w-18/20 h-200">
 
@@ -392,7 +384,6 @@ export default function TradeBoardAddPostPage() {
                 <div className="bg-gray-50 w-1/20 h-full">
                     <h3>section 3</h3>
                 </div>
-
 
             </div>
         </form>

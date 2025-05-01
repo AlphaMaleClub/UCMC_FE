@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation"; // ✅ 쿼리스트링을 위한 훅 추가
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getAllPost } from "@/service/tradeBoardService";
 
@@ -9,13 +9,12 @@ export default function TradeBoardPage() {
     const params = useParams();
     const currentPage = parseInt(params.page, 10);
 
-    const searchParams = useSearchParams(); // ✅ URL 쿼리 파라미터 접근
-    const router = useRouter(); // ✅ 페이지 이동을 위한 라우터
+    const searchParams = useSearchParams();
+    const router = useRouter();
 
-    const sortParam = searchParams.get("sort") || "updatedAt,desc"; // ✅ URL에서 sort 값 가져오기 (기본값: 최신순)
-    const [sortOption, setSortOption] = useState(sortParam); // ✅ 정렬 기준을 상태로 관리
+    const sortParam = searchParams.get("sort") || "updatedAt,desc";
+    const [sortOption, setSortOption] = useState(sortParam);
 
-    // ✅ URL에 따라 초기 selected 상태를 정함 (버튼 UI 용)
     const getInitialSelected = () => {
         if (sortParam === "price,asc") return "낮은가격순";
         if (sortParam === "price,desc") return "높은가격순";
@@ -41,7 +40,7 @@ export default function TradeBoardPage() {
         if (label === "높은가격순") sortVal = "price,desc";
 
         setSortOption(sortVal); // 정렬 기준 상태 업데이트
-        router.push(`/tradeboard/1?sort=${sortVal}`);// ✅ URL에 쿼리 반영
+        router.push(`/tradeboard/1?sort=${sortVal}`);
     };
 
     useEffect(() => {
@@ -80,7 +79,7 @@ export default function TradeBoardPage() {
                 setPosts(postsWithImage);
                 setTotalPages(result.tradePosts.totalPages);
             } catch (err) {
-                console.error("❌ 데이터 불러오기 실패:", err);
+                console.error("데이터 불러오기 실패:", err);
             }
         }
 
@@ -166,7 +165,7 @@ export default function TradeBoardPage() {
                     <div className="flex cursor-pointer justify-center gap-2 pb-6 text-gray-600">
                         {/* << */}
                         {currentPage > 10 ? (
-                            <Link href={`/tradeboard/${Math.max(1, currentPage - 10)}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
+                            <Link href={`/tradeboard/${Math.max(1, currentPage - 10)}?sort=${sortOption}`}>
                                 <button className="px-3 py-1 hover:bg-red-400 bg-none rounded">&laquo;</button>
                             </Link>
                         ) : (
@@ -177,7 +176,7 @@ export default function TradeBoardPage() {
 
                         {/* < */}
                         {currentPage > 1 ? (
-                            <Link href={`/tradeboard/${currentPage - 1}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
+                            <Link href={`/tradeboard/${currentPage - 1}?sort=${sortOption}`}>
                                 <button className="px-3 py-1 hover:bg-red-400 bg-none rounded">&lt;</button>
                             </Link>
                         ) : (
@@ -190,7 +189,7 @@ export default function TradeBoardPage() {
                         {Array.from({ length: endPage - startPage + 1 }, (_, idx) => {
                             const pageNumber = startPage + idx;
                             return (
-                                <Link key={pageNumber} href={`/tradeboard/${pageNumber}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
+                                <Link key={pageNumber} href={`/tradeboard/${pageNumber}?sort=${sortOption}`}>
                                     <button
                                         className={`px-3 py-1 rounded ${
                                             currentPage === pageNumber
@@ -206,7 +205,7 @@ export default function TradeBoardPage() {
 
                         {/* > */}
                         {currentPage < totalPages ? (
-                            <Link href={`/tradeboard/${currentPage + 1}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
+                            <Link href={`/tradeboard/${currentPage + 1}?sort=${sortOption}`}>
                                 <button className="px-3 py-1 hover:bg-red-400 bg-none rounded">&gt;</button>
                             </Link>
                         ) : (
@@ -217,7 +216,7 @@ export default function TradeBoardPage() {
 
                         {/* >> */}
                         {currentPage + 10 <= totalPages ? (
-                            <Link href={`/tradeboard/${Math.min(totalPages, currentPage + 10)}?sort=${sortOption}`}> {/* ✅ sortOption 유지 */}
+                            <Link href={`/tradeboard/${Math.min(totalPages, currentPage + 10)}?sort=${sortOption}`}>
                                 <button className="px-3 py-1 hover:bg-red-400 bg-none rounded">&raquo;</button>
                             </Link>
                         ) : (

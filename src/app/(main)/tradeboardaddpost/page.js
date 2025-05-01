@@ -106,7 +106,7 @@ export default function TradeBoardAddPostPage() {
         const cleanFormData = {
             ...formData,
             price: Number(rawPrice),
-            deliveryType: deliveryType  // ✅ 이 줄 추가
+            deliveryType: deliveryType
         };
 
         const data = new FormData();
@@ -145,8 +145,6 @@ export default function TradeBoardAddPostPage() {
         }
 
     };
-
-
 
 
 

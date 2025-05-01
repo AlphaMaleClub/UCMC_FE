@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation"; // ✅ 쿼리스트링을 위한 훅 추가
 import Link from "next/link";
-import {getAllPost, getTop10Post} from "@/service/tradeBoardService";
+import {getTop10Post} from "@/service/tradeBoardService";
 
 export default function TradeBoardPage() {
 
