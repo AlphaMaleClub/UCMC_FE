@@ -105,5 +105,5 @@ export const updateTradePost = async (postId, formData) => {
     } catch (error) {
         console.error("게시글 수정 실패",error)
         throw new Error("게시글 수정 실패")
-    }ㅞ
+    }
 };
