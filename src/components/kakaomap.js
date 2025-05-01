@@ -62,7 +62,6 @@ export default function KakaoMap({ onSelectLocation }) {
                         setCoords(new window.kakao.maps.LatLng(lat, lng))
                     },
                     () => {
-                        console.warn('⚠️ 위치 정보 사용 불가, 기본 좌표 사용')
                         createMap(33.450701, 126.570667)
                         setCoords(new window.kakao.maps.LatLng(33.450701, 126.570667))
                     }
@@ -99,8 +98,8 @@ export default function KakaoMap({ onSelectLocation }) {
                     // 지오 코더를 이용하여 실질적으로 좌표 -> 주소로 변경을 해준다.
                     geocoder.coord2Address(pos.getLng(), pos.getLat(), (result, status) => {
                         if (status === window.kakao.maps.services.Status.OK) {
+
                             const address = result[0].address.address_name
-                            console.log('📦 드래그 후 주소:', address)
 
                             // 좌표 저장
                             const lat = pos.getLat()
@@ -124,8 +123,8 @@ export default function KakaoMap({ onSelectLocation }) {
 
         geocoder.coord2Address(pos.getLng(), pos.getLat(), (result, status) => {
             if (status === window.kakao.maps.services.Status.OK) {
+
                 const address = result[0].address.address_name
-                console.log('✅ 최종 선택된 주소:', address)
                 onSelectLocation(address)
 
                 // 저장

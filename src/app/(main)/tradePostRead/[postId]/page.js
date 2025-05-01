@@ -176,7 +176,6 @@ export default function TradePostAdd() {
     };
 
     // 채팅 시작
-
     const chatStart = async (commentAuthor) => {
         if (!isAuthenticated) {
             alert('로그인이 필요합니다.');
@@ -201,7 +200,6 @@ export default function TradePostAdd() {
             {/* 왼쪽 여백 공간 */}
             <div className="bg-gray-50 w-1/20 h-full p-1">
             </div>
-
 
             <div className="bg-white w-18/20 min-h-screen flex flex-col items-center">
 
@@ -243,7 +241,6 @@ export default function TradePostAdd() {
                                     )}
                                 </div>
                             </div>
-
 
                             <p className="text-xl font-semibold">{data?.price?.toLocaleString()} 원</p>
                             <p className="text-sm font-semibold text-black">
@@ -351,11 +348,8 @@ export default function TradePostAdd() {
                                     </div>
                                 ))}
                         </div>
-                    
-
 
                         </div>
-
                         {selectedImage && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center">
                                 <div className="absolute inset-0 bg-white opacity-90"></div>

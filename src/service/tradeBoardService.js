@@ -1,7 +1,5 @@
 import { axiosAuthRequest, axiosDefaultRequest } from "./AxiosConfig"
 
-
-
 export const createTradePost = async (formData) => {
     try {
         const response = await axiosAuthRequest.post("api/trade-posts", formData, {
