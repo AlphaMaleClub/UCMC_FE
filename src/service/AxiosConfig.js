@@ -2,8 +2,8 @@ import axios from "axios";
 const API_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN;
 // const API_ORIGIN = "http://localhost:8080/api";
 
-//먼저 요청 보내는 코드임.(LocalStorage 에서 보냄)
-//여기서 날라가는건 AccessToken
+// 먼저 요청 보내는 코드임.(LocalStorage 에서 보냄)
+// 여기서 날라가는건 AccessToken
 export const axiosAuthRequest = axios.create({
     baseURL: API_ORIGIN,
     headers: {

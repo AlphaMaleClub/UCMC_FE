@@ -33,11 +33,12 @@ export default function Signup () {
     };
 
     const searchParams = useSearchParams();
+    const signUpMember = searchParams.get("memberNum") || "-1";
     const defaultProvier = searchParams.get("provider") || "none";
     const defaultAccountId = searchParams.get("accountId") || "";
     const defalutnickname = searchParams.get("nickname")|| "";
     const defaultEmail = searchParams.get("email") || "";
-    const defaultName = searchParams.get("realName") || "";
+    // const defaultName = searchParams.get("realName") || "";
 
     /*
 
@@ -55,8 +56,9 @@ export default function Signup () {
         accountId: defaultAccountId,
         password: "",
         nickname: defalutnickname,
-        name: defaultName,
+        // name: defaultName,
         email: defaultEmail,
+        tempMemberNumber : signUpMember,
 
     });
 
@@ -81,13 +83,13 @@ export default function Signup () {
                         onChange={(e) => setForm({...Form, password: e.target.value})}
                     />
 
-                    <input
+                    {/* <input
                         type="text"
                         placeholder="실명"
                         className="block w-full p-2 border"
                         value ={Form.name}
                         onChange={(e) => setForm({...Form, name: e.target.value})}
-                    />
+                    /> */}
 
                     <input
                         type="text"
