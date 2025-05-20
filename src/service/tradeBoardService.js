@@ -17,7 +17,7 @@ export const createTradePost = async (formData) => {
 
 export const getTop10Post = async () => {
     try {
-        const response = await axiosAuthRequest.get("http://localhost:8080/api/trade-posts/top10")
+        const response = await axiosAuthRequest.get("/api/trade-posts/top10")
         return response.data
 
     } catch (error) {
@@ -28,7 +28,7 @@ export const getTop10Post = async () => {
 
 export const getAllPost = async (page, sort) => {
     try {
-        const response = await axiosAuthRequest.get(`http://localhost:8080/api/trade-posts?page=${page}&sort=${sort}`);
+        const response = await axiosAuthRequest.get(`api/trade-posts?page=${page}&sort=${sort}`);
         return response.data;
 
     } catch (error) {
@@ -40,7 +40,7 @@ export const getAllPost = async (page, sort) => {
 
 export const getPostInfoAndImages = async (postId) => {
     try {
-        const response = await axiosAuthRequest.get(`http://localhost:8080/api/trade-posts/${postId}`);
+        const response = await axiosAuthRequest.get(`/api/trade-posts/${postId}`);
         return response.data
 
     } catch (error) {
@@ -62,7 +62,7 @@ export const bumpPost = async (postId) => {
 
 export const deletePost = async (postId) => {
     try {
-        const response = await axiosAuthRequest.delete(`http://localhost:8080/api/trade-posts/${postId}`);
+        const response = await axiosAuthRequest.delete(`/api/trade-posts/${postId}`);
         return response.data
 
     } catch (error) {
@@ -74,7 +74,7 @@ export const deletePost = async (postId) => {
 export const updateOnlyStatusTradePost = async (postId, status) => {
     try {
         const response = await axiosAuthRequest.put(
-            `http://localhost:8080/api/trade-posts/${postId}/status`,
+            `/api/trade-posts/${postId}/status`,
             { status }, // ← JSON body
             {
                 headers: {
@@ -92,7 +92,7 @@ export const updateOnlyStatusTradePost = async (postId, status) => {
 export const updateTradePost = async (postId, formData) => {
     try {
         const response = await axiosAuthRequest.put(
-            `http://localhost:8080/api/trade-posts/${postId}`,
+            `/api/trade-posts/${postId}`,
             formData,
             {
                 headers: {

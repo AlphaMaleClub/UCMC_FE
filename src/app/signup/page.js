@@ -2,11 +2,11 @@
 "use client";
 import "../globals.css";
 import useAccessGuard from "@/hooks/useAccessGuard";
-import Link from "next/link"
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signup } from "@/service/MemberService"
+import { signup } from "@/service/MemberService";
+import useSignupForm from "@/components/auth/ValidateField";
 
 export default function Signup () {
 
@@ -69,17 +69,19 @@ export default function Signup () {
                 <form onSubmit = {handleSubmit}>
                     <input
                         type="text"
+                        name="accountId"
                         placeholder="accountId"
                         className="block w-full p-2 border"
-                        value ={Form.accountId}
+                        value={Form.accountId}
                         onChange={(e) => setForm({...Form, accountId: e.target.value})}
                     />
 
                     <input
                         type="password"
+                        name="password"
                         placeholder="Password"
                         className="block w-full p-2 border"
-                        value ={Form.password}
+                        value={Form.password}
                         onChange={(e) => setForm({...Form, password: e.target.value})}
                     />
 
@@ -93,6 +95,7 @@ export default function Signup () {
 
                     <input
                         type="text"
+                        name="nickname"
                         placeholder="닉네임(가명)"
                         className="block w-full p-2 border"
                         value ={Form.nickname}
@@ -100,6 +103,7 @@ export default function Signup () {
                     />
                     <input
                         type="email"
+                        name="email"
                         placeholder="이메일"
                         className="block w-full p-2 border"
                         value ={Form.email}
